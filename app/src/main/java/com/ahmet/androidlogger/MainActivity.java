@@ -4,28 +4,36 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.ahmet.androidlogger.logger.LogRecord;
-import com.ahmet.androidlogger.logger.Logger;
-import com.ahmet.androidlogger.logger.simple.SimpleLogFormatter;
-import com.ahmet.androidlogger.logger.simple.SimpleLogger;
+import com.ahmet.androidlogger.logger.DefaultLogFormatter;
+import com.ahmet.androidlogger.logger.LogManager;
+import com.ahmet.androidlogger.logger.LogSaver;
 
-import java.util.Date;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
+    LogGenerator logGenerator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SimpleLogger logger = new SimpleLogger();
+        try {
+            // Initialize LogSaver with DefaultLogFormatter
+            LogSaver logSaver = new LogSaver(this, new DefaultLogFormatter());
+            LogManager logManager = new LogManager(logSaver);
+
+            // Log various messages
+//            logManager.logInfo("Application started successfully.");
+//            logManager.logDebug("Debugging user flow.");
+//            logManager.logWarning("Low memory warning.");
+//            logManager.logError("Failed to load user profile.");
 
 
-        logger.log(new LogRecord.Builder()
-                .level(Logger.LogLevel.ERROR)
-                .message("asas")
-                .timestamp(new Date()).build());
-
-
+            logGenerator = new LogGenerator(logManager);
+            logGenerator.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
